@@ -1,2 +1,2 @@
 # BetterHalf
-https://gospelbeats.github.io/BetterHalf/index.html
+https://gospelbeats.github.io/betterhalf/index.html
