@@ -1,0 +1,219 @@
+<!doctype html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>Husband/Wife Quiz</title>
+	<script src="https://www.gstatic.com/firebasejs/6.2.4/firebase.js"></script> <!-- FIREBASE remove app in link -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+	<link href="https://fonts.googleapis.com/css?family=Comfortaa:400,700&display=swap" rel="stylesheet">
+	<style>
+	.gfont {
+		font-family: 'Comfortaa', cursive;
+	}
+	body {
+		background-color: #F0B6B6;
+	}
+	</style>
+</head>
+
+<body>
+	<div class="container mt-5 jumbotron border border-primary">
+	<h1 id="timer" class="text-center gfont text-primary">Questions For My Better Half</h1>
+	<hr>
+	<p class="lead">Choose the Best Answer</p>
+
+	<div id="ques" class="gfont"></div>
+	
+	<div id="one"></div>
+	<div id="two"></div>
+	<div id="three"></div>
+	<div id="four"></div>
+	
+	<br>
+	<button class="btn btn-secondary">submit</button>
+	
+	<h2 id="answer-display" class="text-center gfont"></h2>
+	<div class="float-right lead">Powered by CW</div>
+	</div>
+	
+	<script>
+// ************ UNIQUE FIREBASE CODE **************************//********************//		
+	var firebaseConfig = {
+    apiKey: "AIzaSyDTNk09fV93Eq9iBESx5qiztrbj4dFe0UU",
+    authDomain: "quiz-1f73c.firebaseapp.com",
+    databaseURL: "https://quiz-1f73c.firebaseio.com",
+    projectId: "quiz-1f73c",
+    storageBucket: "quiz-1f73c.appspot.com",
+    messagingSenderId: "64133948571",
+    appId: "1:64133948571:web:7e7f6d708699d74f"
+  };
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+		
+  var database = firebase.database();
+		
+// ************ UNIQUE FIREBASE CODE **************************//********************//	
+		
+		
+		// array of questions and answers
+		let questions = [ 
+			{
+				question: "Which do you prefer?",
+				//imgSrc: "p.jpg",
+				choiceA: "French fries",
+				choiceB: "Tater Tots",
+				choiceC: "Potato Wedges",
+				choiceD: "Onion Rings",
+				//correct: "Jquery",
+			},
+			{
+				question: "Which is best for breakfast?",
+				//imgSrc: "img/html.png",
+				choiceA: "Waffles",
+				choiceB: "Pancakes",
+				choiceC: "French Toast",
+				choiceD: "Buttered Toast",
+				//correct: "variable",
+			},
+			{
+				question: "Which do you prefer?",
+				//imgSrc: "img/html.png",
+				choiceA: "Apple Pie",
+				choiceB: "Sweet Potato Pie",
+				choiceC: "Chicken Pot Pie",
+				choiceD: "Blueberry Pie",
+				//correct: "Ajax",
+			},
+			{
+				question: "Which is the best way to calm down when upset?",
+				//imgSrc: "img/html.png",
+				choiceA: "Eaing a delicious snack",
+				choiceB: "Taking a nap",
+				choiceC: "Getting a massage",
+				choiceD: "Looking at your favorite TV Show",
+				//correct: "GET",
+			},
+			{
+				question: "Which do you prefer?",
+				//imgSrc: "p.jpg",
+				choiceA: "Tennis",
+				choiceB: "Ping Pong",
+				choiceC: "Badminton",
+				choiceD: "Volley Ball",
+				//correct: "Jquery",
+			},
+			{
+				question: "Which workout you prefer?",
+				//imgSrc: "img/html.png",
+				choiceA: "Walking",
+				choiceB: "Dancing",
+				choiceC: "Riding Bikes",
+				choiceD: "Running",
+				//correct: "variable",
+			},
+			{
+				question: "Which do you prefer?",
+				//imgSrc: "img/html.png",
+				choiceA: "Movie",
+				choiceB: "Reading",
+				choiceC: "Mystery Game Room",
+				choiceD: "Painting",
+				//correct: "Ajax",
+			},
+			{
+				question: "Which do you prefer?",
+				//imgSrc: "img/html.png",
+				choiceA: "Self Defense Class",
+				choiceB: "Dancing Class",
+				choiceC: "Pottery Class",
+				choiceD: "Cooking Class",
+				//correct: "GET",
+			},
+		]
+		
+		// variables 
+		
+		let arr = ["Wow, I'm surprised you picked that one", 
+				   "Cool, good choice", 
+				   "Hum.. that's new",
+				   "Wasn't expecting that choice",
+				   "Interesting",
+				   "Hum.. didn't know that",
+				   "Ok, I got you",
+				   "Nice choice",
+				   "Ok, ok",
+				   "I can see why you choose that",
+				   "Wow, that's cool",
+				   "Ok..",
+				   "Cool..",
+				   "hum..",
+				   "Didn't see that coming"];
+		
+	
+		let question = 0;
+		
+		function showQuestions(i) {
+			// assigning question array to html element
+			$("#ques").html("<h2> " + questions[i].question + " </h2> <br>");
+			$("#one").html("<input type='radio' value=" + questions[i].choiceA + " > " + questions[i].choiceA + "</input> <br />");
+			$("#two").html("<input type='radio' value=" + questions[i].choiceB + " > " + questions[i].choiceB + "</input> <br />");
+			$("#three").html("<input type='radio' value=" + questions[i].choiceC + " > " + questions[i].choiceC + "</input> <br />");
+			$("#four").html("<input type='radio' value=" + questions[i].choiceD + " > " + questions[i].choiceD + "</input> <br />");
+			
+		}
+		// button to get the answer
+		$("button").on("click", function () {
+			
+			let rand = Math.floor(Math.random() * 13);
+			let display = arr[rand];
+			
+			// put user's choice in a variable
+			let herAnswer = $("input[type='radio']:checked").val();
+			
+			console.log(herAnswer);
+			
+			let theQuestion = questions[question];
+			
+// ************ UNIQUE FIREBASE CODE **************************// ****************************//
+			
+			 // Creates local "temporary" object for holding her data
+			  var ans = {
+				asking: theQuestion,
+				mostImportant: herAnswer,
+			  };
+
+			  // Uploads her data to the database
+				database.ref().push(ans);
+			
+// ************ UNIQUE FIREBASE CODE **************************// ****************************//
+			
+				$("#answer-display").text(display);
+				// shows text for about 1 sec then goes away
+
+				// update question count
+				question++;
+				if (question < questions.length){
+					
+					setTimeout(function(){ 
+					$("#answer-display").text(""); 
+					}, 1500);
+					
+				setTimeout(function(){
+				// run question function to view next question
+					showQuestions(question);
+					}, 1500);
+				}
+				else{
+					$("#answer-display").text("Quiz Complete! Thanks for Sharing");
+				}
+		});
+		// starts the game by displaying the quesions 
+		showQuestions(question);
+	
+	// need to connect to firebase
+	</script>
+</body>
+
+</html>
